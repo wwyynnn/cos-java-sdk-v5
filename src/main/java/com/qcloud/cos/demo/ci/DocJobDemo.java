@@ -24,22 +24,30 @@ public class DocJobDemo {
         //1.创建任务请求对象
         DocJobRequest request = new DocJobRequest();
         //2.添加请求参数 参数详情请见api接口文档
-        request.setBucketName("examplebucket-1250000000");
+
+        // Request 中的具体数据：
+        request.setBucketName("examplebucket-1250000000"); // Bucket 的命名规则为 BucketName-APPID，
+
         DocJobObject docJobObject = request.getDocJobObject();
-        docJobObject.setTag("DocProcess");
-        docJobObject.getInput().setObject("demo.docx");
-        docJobObject.setQueueId("pc02270c617ae4b6d9b0a52cb1c*****");
+        docJobObject.setTag("DocProcess"); // 文档预览固定传 DocProcess
+        docJobObject.getInput().setObject("demo.docx"); // 文件路径
+        docJobObject.setQueueId("pc02270c617ae4b6d9b0a52cb1c*****"); // 任务所在的队列ID
+
+        // DocProcess 的具体数据：（all not requested)
         DocProcessObject docProcessObject = docJobObject.getOperation().getDocProcessObject();
-        docProcessObject.setQuality("100");
-        docProcessObject.setZoom("100");
-        docProcessObject.setStartPage("1");
-        docProcessObject.setEndPage("3");
-        docProcessObject.setTgtType("png");
-        docProcessObject.setDocPassword("123");
+        docProcessObject.setQuality("100"); // 生成预览图的图片质量，取值范围 [1-100]，默认值100。
+        docProcessObject.setZoom("100"); // 预览图片的缩放参数，取值范围[10-200]， 默认值100。
+        docProcessObject.setStartPage("1"); // 从第 X 页开始转换
+        docProcessObject.setEndPage("3"); // 转换至第 X 页
+        docProcessObject.setTgtType("png"); // 转换输出目标文件类型
+        docProcessObject.setDocPassword("123"); // Office 文档的打开密码
+
+        //  Output 的具体数据：
         MediaOutputObject output = docJobObject.getOperation().getOutput();
-        output.setRegion("ap-chongqing");
-        output.setBucket("examplebucket-1250000000");
-        output.setObject("mark/pic-${Page}.jpg");
+        output.setRegion("ap-chongqing"); // 存储桶的地域
+        output.setBucket("examplebucket-1250000000"); // 存储结果的存储桶
+        output.setObject("mark/pic-${Page}.jpg"); // 输出文件路径。
+
         //3.调用接口,获取任务响应对象
         DocJobResponse docProcessJobs = client.createDocProcessJobs(request);
         System.out.println(docProcessJobs);
